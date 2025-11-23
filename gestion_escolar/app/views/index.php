@@ -23,42 +23,52 @@
             </div>
 
             <h1>School Gesture</h1>
+            <?php if (!empty($error)): ?>
+                <div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
 
+        <!-- 🔥 FORMULARIO REAL -->
+        <form action="/gestion_escolar/app/controllers/LoginController.php" method="POST">
+
+            <!-- SELECTOR DE ROL -->
             <div class="role-selector">
 
-                <button class="role active" data-role="Alumno">
+                <button type="button" class="role active" data-role="Alumno">
                     <i class="fa-solid fa-user"></i>
                     Alumno
                 </button>
 
-                <button class="role" data-role="Profesores">
+                <button type="button" class="role" data-role="Profesores">
                     <i class="fa-solid fa-graduation-cap"></i>
                     Profesores
                 </button>
 
-                <button class="role" data-role="Administrativo">
+                <button type="button" class="role" data-role="Administrativo">
                     <i class="fa-solid fa-briefcase"></i>
                     Administrativo
                 </button>
 
             </div>
 
-            
+            <!-- 🔥 INPUT OCULTO QUE ENVÍA EL ROL -->
+            <input type="hidden" name="rol" id="rol" value="Alumno">
 
             <label>Usuario</label>
-            <input type="text" id="usuario" placeholder="Ingresa tu usuario">
-            <div id="user-error" class="error-text"></div>
+            <input type="text" name="usuario" id="usuario" placeholder="Ingresa tu usuario">
 
             <label>Contraseña</label>
-            <input type="password" id="contraseña" placeholder="Ingresa tu contraseña">
-            <div id="pass-error" class="error-text"></div>
+            <input type="password" name="contraseña" id="contraseña" placeholder="Ingresa tu contraseña">
 
-            <button class="btn-login">Iniciar Sesión</button>
+            <button class="btn-login" type="submit">Iniciar Sesión</button>
+
+        </form>
 
         </div>
     </div>
-    <script src="/gestion_escolar/public/java/script.js"></script>
 
+    <script src="/gestion_escolar/public/java/script.js"></script>
 
 </body>
 </html>

@@ -17,11 +17,11 @@
             <div class="profile-wrapper">
             <div class="user-info">
                 <div class="user-text">
-                    <span class="user-name">Usuario</span>
+                    <span class="user-name"><?php echo $datosAdmin['nombre_completo'] ?? 'Usuario'; ?></span>
                     <span class="user-sub-role">Administrativo</span>
                 </div>
                 
-                <div class="profile-picture" id="profile-toggler" ></div>
+                <div class="profile-picture" id="profile-toggler"></div>
             </div>
 
             <div class="profile-actions" id="profile-actions-menu" >
@@ -31,7 +31,7 @@
                     Recibir Ayuda
                 </a>
                 
-                <a href="index.php?p=logout" id="logout-button" class="action-button">
+                <a href="/gestion_escolar/index.php?p=logout" id="logout-button" class="action-button">
                     <div class="button-icon logout"></div>
                     Cerrar Sesion
                 </a>
@@ -96,19 +96,37 @@
         
                 <!-- Primera fila -->
             <div class="columna-izquierda">
-                <div class="campo campo-docente">Nombre Completo:</div>
-                <div class="campo campo-docente">Número de empleado:</div>
-                <div class="campo campo-docente">Horario de Atención:</div>
-                <div class="campo campo-docente">Ubicación de Oficina:</div>
-                <div class="campo campo-docente">Período de Ingreso:</div>
+                 <div class="campo campo-docente">Nombre Completo: <br><strong><?php echo $datosAdmin['nombre_completo'] ?? 'No disponible'; ?></strong></div>
+            <div class="campo campo-docente">Número de empleado: <br><strong><?php echo $datosAdmin['num_empleado'] ?? 'No disponible'; ?></strong></div>
+            <div class="campo campo-docente">Horario de Atención: <br><strong><?php echo $datosAdmin['horario_atencion'] ?? 'No disponible'; ?></strong></div>
+            <div class="campo campo-docente">Ubicación de Oficina: <br><strong><?php echo $datosAdmin['ubicacion'] ?? 'No disponible'; ?></strong></div>
+            <div class="campo campo-docente">Responsabilidad Asignada: <br><strong><?php echo $datosAdmin['responsabilidad'] ?? 'No disponible'; ?></strong></div>
             </div>
             
 
             <!-- Segunda fila -->
             <div class="columna-derecha">
-                <div class="caja-grande altura-doble">Carrera(s) Encargada(s):</div> 
+                <div class="caja-grande altura-doble">
+                    <strong>Carrera(s) Encargada(s):</strong><br>
+                    <?php if (!empty($carreras)): ?>
+                        <?php foreach ($carreras as $carrera): ?>
+                            • <?php echo $carrera['carrera'] ?? 'Carrera'; ?><br>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        No hay carreras asignadas
+                    <?php endif; ?>
+                </div>
                 
-                <div class="caja-grande altura-doble">Grupo(s) Encargado(s):</div> 
+                <div class="caja-grande altura-doble">
+                    <strong>Grupo(s) Encargado(s):</strong><br>
+                    <?php if (!empty($grupos)): ?>
+                        <?php foreach ($grupos as $grupo): ?>
+                            • <?php echo $grupo['nombre'] ?? 'Grupo'; ?> - <?php echo $grupo['carrera'] ?? 'Carrera'; ?><br>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        No hay grupos asignados
+                    <?php endif; ?>
+                </div>
                 
                 <div class="caja-grande altura-simple">Responsabilidad Asignada:</div>
             </div>

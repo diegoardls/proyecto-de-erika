@@ -17,11 +17,11 @@
             <div class="profile-wrapper">
             <div class="user-info">
                 <div class="user-text">
-                    <span class="user-name">Usuario</span>
+                    <span class="user-name"><?php echo $datosAlumno['nombre_completo'] ?? 'Usuario'; ?></span>
                     <span class="user-sub-role">Alumno</span>
                 </div>
                 
-                <div class="profile-picture" id="profile-toggler" ></div>
+                <div class="profile-picture" id="profile-toggler"></div>
             </div>
 
             <div class="profile-actions" id="profile-actions-menu" >
@@ -31,7 +31,7 @@
                     Recibir Ayuda
                 </a>
                 
-                <a href="/gestion_escolar/public/index.php?p=logout" id="logout-button" class="action-button">
+                <a href="/gestion_escolar/index.php?p=logout" id="logout-button" class="action-button">
                     <div class="button-icon logout"></div>
                     Cerrar Sesion
                 </a>
@@ -51,9 +51,19 @@
         <section id="inicio-content" class="dashboard-content content-section active">
             <section class="card wide-card notices-card">
                 <h2 class="card-title">Avisos Importantes</h2>
-                <div class="card-item placeholder" style="height:90px;"></div>
-                <div class="card-item placeholder" style="height:90px;"></div>
-                <div class="card-item placeholder" style="height:90px;"></div>
+                 <?php if (!empty($avisos)): ?>
+                    <?php foreach ($avisos as $aviso): ?>
+                        <div class="card-item" style="height:90px; padding:10px; background:#f5f5f5; margin-bottom:10px; border-radius:4px;">
+                            <strong><?php echo $aviso['titulo'] ?? 'Aviso'; ?></strong><br>
+                            <?php echo $aviso['mensaje'] ?? 'Mensaje del aviso'; ?><br>
+                            <small><?php echo date('d/m/Y', strtotime($aviso['fecha'] ?? 'now')); ?></small>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="card-item placeholder" style="height:90px;">No hay avisos</div>
+                    <div class="card-item placeholder" style="height:90px;"></div>
+                    <div class="card-item placeholder" style="height:90px;"></div>
+                <?php endif; ?>
             </section>
 
             <section class="card wide-card events-card">
@@ -94,23 +104,41 @@
         
                 <!-- Primera fila -->
             <div class="fila">
-                <div class="campo">Nombre Completo:</div>
-                <div class="campo">Carrera:</div>
-                <div class="campo">Matrícula:</div>
+                <div class="campo">Nombre Completo: <br><strong><?php echo $datosAlumno['nombre_completo'] ?? 'No disponible'; ?></strong></div>
+                <div class="campo">Carrera: <br><strong><?php echo $datosAlumno['carrera'] ?? 'No disponible'; ?></strong></div>
+                <div class="campo">Matrícula: <br><strong><?php echo $datosAlumno['matricula'] ?? 'No disponible'; ?></strong></div>
             </div>
 
             <!-- Segunda fila -->
             <div class="fila">
-                <div class="campo">Encargado/a de Carrera:</div>
-                <div class="campo">Horario asignado:</div>
-                <div class="campo-peque">Aula:</div>
-                <div class="campo-peque">Grupo:</div>
+                <div class="campo">Encargado/a de Carrera: <br><strong><?php echo $datosAlumno['encargado_nombre'] ?? 'No disponible'; ?></strong></div>
+                <div class="campo">Horario asignado: <br><strong><?php echo $datosAlumno['turno'] ?? 'No disponible'; ?></strong></div>
+                <div class="campo-peque">Aula: <br><strong><?php echo $datosAlumno['aula'] ?? 'No disponible'; ?></strong></div>
+                <div class="campo-peque">Grupo: <br><strong><?php echo $datosAlumno['nombre_grupo'] ?? 'No disponible'; ?></strong></div>
             </div>
 
             <!-- Tercera fila -->
             <div class="fila">
-                <div class="caja-grande">Carga de Materias:</div>
-                <div class="caja-grande">Profesores Asignados:</div>
+                <div class="caja-grande">
+                    <strong>Carga de Materias:</strong><br>
+                    <?php if (!empty($horario)): ?>
+                        <?php foreach ($horario as $materia): ?>
+                            • <?php echo $materia['materia'] ?? 'Materia'; ?><br>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        No hay materias asignadas
+                    <?php endif; ?>
+                </div>
+                <div class="caja-grande">
+                    <strong>Profesores Asignados:</strong><br>
+                    <?php if (!empty($horario)): ?>
+                        <?php foreach ($horario as $materia): ?>
+                            • <?php echo $materia['profesor'] ?? 'Profesor'; ?><br>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        No hay profesores asignados
+                    <?php endif; ?>
+                </div>
             </div>
 
         </div>
@@ -124,30 +152,19 @@
         </div>
         <div id="horario-content" class="seccion-contenido">
             <div class="general-grid">
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor1</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor2</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor3</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor4</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor5</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor6</strong>
-                    Materia Impartida
-                </div>
+                <?php if (!empty($horario)): ?>
+                    <?php foreach ($horario as $materia): ?>
+                        <div class="general-card">
+                            <strong><?php echo $materia['profesor'] ?? 'Profesor'; ?></strong>
+                            <?php echo $materia['materia'] ?? 'Materia'; ?><br>
+                            <small>Aula: <?php echo $materia['aula'] ?? 'N/A'; ?></small>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="general-card">
+                        <strong>No hay horario disponible</strong>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -156,30 +173,19 @@
         </div>
         <div id="calificaciones-content" class="seccion-contenido ">
             <div class="general-grid">
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor1</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor2</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor3</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor4</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor5</strong>
-                    Materia Impartida
-                </div>
-                <div class="general-card">
-                    <strong>@MatriculaNombrProfesor6</strong>
-                    Materia Impartida
-                </div>
+                <?php if (!empty($calificaciones)): ?>
+                    <?php foreach ($calificaciones as $calif): ?>
+                        <div class="general-card">
+                            <strong><?php echo $calif['materia'] ?? 'Materia'; ?></strong>
+                            Calificación: <?php echo $calif['calificacion'] ?? 'Sin calificación'; ?><br>
+                            <small>Prof: <?php echo $calif['profesor'] ?? 'N/A'; ?></small>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="general-card">
+                        <strong>No hay calificaciones disponibles</strong>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -224,54 +230,41 @@
                 </div>
                     <div id="administrativo-content" class="seccion-contenido">
                         <div class="general-grid">
-                            <div class="general-card" >
-                                <span class="tamano" > @NumemroAdministrativo1 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @NumemroAdministrativo2 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @NumemroAdministrativo3 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
+                            <?php if (!empty($administrativos)): ?>
+                                <?php foreach ($administrativos as $admin): ?>
+                                    <div class="general-card">
+                                        <span class="tamano"><?php echo $admin['num_empleado'] ?? 'N/A'; ?></span>
+                                        <span class="espacio"><?php echo $admin['nombre_completo'] ?? 'Administrativo'; ?></span>
+                                        <span class="espacio"><?php echo $admin['horario_atencion'] ?? 'Horario no disponible'; ?></span>
+                                        <span class="espacio"><?php echo $admin['ubicacion'] ?? 'Ubicación no disponible'; ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="general-card">
+                                    <span class="tamano">No hay administrativos disponibles</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                 <div id="docentes-header" class="seccion-header">
                     Docentes
                 </div>
-                <div id="docentes-content" class="seccion-contenido ">
+                <div id="docentes-content" class="seccion-contenido">
                     <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor1 </span>
-                            <span class="espacio"> Materia Impartida </span>
-
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor2 </span>
-                            <span class="espacio"> Materia Impartida </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor3 </span>
-                            <span class="espacio"> Materia Impartida </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor4 </span>
-                            <span class="espacio"> Materia Impartida </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor5 </span>
-                            <span class="espacio"> Materia Impartida </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrProfesor6 </span>
-                            <span class="espacio"> Materia Impartida </span>
-                        </div>
+                        <?php if (!empty($profesores)): ?>
+                            <?php foreach ($profesores as $profesor): ?>
+                                <div class="general-card">
+                                    <span class="tamano"><?php echo $profesor['matricula'] ?? 'N/A'; ?></span>
+                                    <span class="espacio"><?php echo $profesor['nombre_completo'] ?? 'Profesor'; ?></span>
+                                    <span class="espacio"><?php echo $profesor['carrera_enfocada'] ?? 'Carrera no especificada'; ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="general-card">
+                                <span class="tamano">No hay docentes disponibles</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -280,36 +273,20 @@
                 </div>
                 <div id="grupo-content" class="seccion-contenido">
                     <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
+                        <?php if (!empty($companeros)): ?>
+                            <?php foreach ($companeros as $companero): ?>
+                                <div class="general-card">
+                                    <span class="tamano"><?php echo $companero['matricula'] ?? 'N/A'; ?></span>
+                                    <span class="espacio"><?php echo $companero['nombre_completo'] ?? 'Compañero'; ?></span>
+                                    <span class="espacio"><?php echo $companero['carrera'] ?? 'Carrera'; ?></span>
+                                    <span class="espacio">Grupo: <?php echo $companero['grupo'] ?? 'N/A'; ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="general-card">
+                                <span class="tamano">No hay compañeros en tu grupo</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

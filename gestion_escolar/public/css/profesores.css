@@ -459,6 +459,28 @@ header {
     overflow-x: auto; /* Permite desplazamiento si hay demasiadas pestañas */
     white-space: nowrap; /* Evita que las pestañas salten de línea */
     border-bottom: 1px solid #c9dfeb; /* Línea que separa las pestañas del contenido */
+    background: #f8f9fa;
+}
+
+.horizontal-tabs-container .seccion-header {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    margin-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    border-bottom: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.horizontal-tabs-container .seccion-header:hover {
+    background-color: #e9ecef;
+}
+
+.horizontal-tabs-container .seccion-header.active-header {
+    background-color: #007bff;
+    color: white;
+    border-left: none;
 }
 
 

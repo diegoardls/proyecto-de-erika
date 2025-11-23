@@ -1,12 +1,14 @@
 <?php
-session_start();
-
+// app/controllers/LogoutController.php
 class LogoutController {
-    public function salir() {
-        session_unset();     // Limpia variables
-        session_destroy();   // Destruye la sesión
-        
-        header("Location: /gestion_escolar/public/"); // Redirige al login
+    public function logout() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_unset();
+        session_destroy();
+        header("Location: /gestion_escolar/");
         exit;
     }
 }
+?>

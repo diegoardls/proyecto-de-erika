@@ -66,3 +66,13 @@ loginBtn.addEventListener("click", () => {
         return;
     }
 });
+const botones = document.querySelectorAll('.role');
+
+botones.forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelector('#rol').value = btn.dataset.role;
+
+        botones.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});

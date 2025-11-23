@@ -139,22 +139,22 @@ if (toggler && actionsMenu) {
 // =======================
 // LOGOUT (Cerrar Sesión)
 // =======================
-document.addEventListener("DOMContentLoaded", () => {
+//document.addEventListener("DOMContentLoaded", () => {
 
-    const logoutButton = document.getElementById("logout-button");
+ //   const logoutButton = document.getElementById("logout-button");
 
-    if (logoutButton) {
-        logoutButton.addEventListener("click", (e) => {
-            e.preventDefault(); 
+ //   if (logoutButton) {
+  //      logoutButton.addEventListener("click", (e) => {
+  //          e.preventDefault(); 
 
-            console.log("Cerrando sesión...");
+   //         console.log("Cerrando sesión...");
 
             // Redirige al login
-            window.location.href = "/gestion_escolar/public/index.php";
-        });
-    } else {
-        console.error("❌ No se encontró #logout-button");
-    }
-});
+  //          window.location.href = "/gestion_escolar/public/index.php";
+   //     });
+   // } else {
+   //     console.error("❌ No se encontró #logout-button");
+  //  }
+//});
 
 
