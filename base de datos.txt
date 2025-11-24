@@ -114,6 +114,33 @@ CREATE TABLE avisos (
     FOREIGN KEY (creado_por) REFERENCES usuarios(id),
     FOREIGN KEY (grupo_id) REFERENCES grupos(id)
 );
+-- Tabla de conversaciones
+CREATE TABLE IF NOT EXISTS conversaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario1 INT NOT NULL,
+    id_usuario2 INT NOT NULL,
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario1) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario2) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_usuario1 (id_usuario1),
+    INDEX idx_usuario2 (id_usuario2)
+);
+
+-- Tabla de mensajes
+CREATE TABLE IF NOT EXISTS mensajes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conversacion_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    leido TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (conversacion_id) REFERENCES conversaciones(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_conversacion (conversacion_id),
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_fecha (fecha_envio)
+);
+
 
 -- INSERTAR DATOS DE PRUEBA
 INSERT INTO usuarios (usuario, contraseña, rol) VALUES
@@ -151,4 +178,5 @@ INSERT INTO profesor_materia (id_profesor, id_materia) VALUES
 (2, 1), (2, 2), (5, 3), (5, 4);
 
 INSERT INTO grupo_materia (id_grupo, id_materia, id_profesor) VALUES
+
 (1, 1, 2), (1, 2, 2), (2, 3, 5), (2, 4, 5);
