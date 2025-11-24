@@ -27,12 +27,12 @@ class ProfesorModel {
     public function obtenerMateriasImpartidas($profesorId) {
         try {
             $query = "SELECT DISTINCT m.nombre as materia, g.nombre as grupo, g.id as grupo_id
-                    FROM profesor_materia pm
-                    JOIN materias m ON pm.id_materia = m.id
-                    JOIN grupo_materia gm ON gm.id_materia = m.id AND gm.id_profesor = pm.id_profesor
-                    JOIN grupos g ON gm.id_grupo = g.id
-                    WHERE pm.id_profesor = :id
-                    ORDER BY g.nombre, m.nombre";
+                      FROM profesor_materia pm
+                      JOIN materias m ON pm.id_materia = m.id
+                      JOIN grupo_materia gm ON gm.id_materia = m.id AND gm.id_profesor = pm.id_profesor
+                      JOIN grupos g ON gm.id_grupo = g.id
+                      WHERE pm.id_profesor = :id
+                      ORDER BY g.nombre, m.nombre";
             
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(":id", $profesorId);
@@ -85,48 +85,47 @@ class ProfesorModel {
             return [];
         }
     }
-}
-// Obtener administrativos para contactar
-public function obtenerAdministrativos() {
-    try {
-        $query = "SELECT id, nombre_completo, num_empleado, horario_atencion, ubicacion 
-                  FROM administrativos 
-                  ORDER BY nombre_completo";
-        
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Obtener administrativos para contactar
+    public function obtenerAdministrativos() {
+        try {
+            $query = "SELECT id, nombre_completo, num_empleado, horario_atencion, ubicacion 
+                      FROM administrativos 
+                      ORDER BY nombre_completo";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
 
-    } catch (PDOException $e) {
-        error_log("Error obteniendo administrativos: " . $e->getMessage());
-        return [];
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            error_log("Error obteniendo administrativos: " . $e->getMessage());
+            return [];
+        }
     }
-}
 
-// Obtener otros profesores
-public function obtenerOtrosProfesores($profesorId) {
-    try {
-        $query = "SELECT id, nombre_completo, matricula, carrera_enfocada 
-                  FROM profesores 
-                  WHERE id != :id
-                  ORDER BY nombre_completo";
-        
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":id", $profesorId);
-        $stmt->execute();
+    // Obtener otros profesores
+    public function obtenerOtrosProfesores($profesorId) {
+        try {
+            $query = "SELECT id, nombre_completo, matricula, carrera_enfocada 
+                      FROM profesores 
+                      WHERE id != :id
+                      ORDER BY nombre_completo";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":id", $profesorId);
+            $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    } catch (PDOException $e) {
-        error_log("Error obteniendo otros profesores: " . $e->getMessage());
-        return [];
+        } catch (PDOException $e) {
+            error_log("Error obteniendo otros profesores: " . $e->getMessage());
+            return [];
+        }
     }
-}
 
-// Obtener alumnos de los grupos que imparte
-// Obtener alumnos de los grupos que imparte (agrupados por grupo)
-public function obtenerAlumnosGrupos($profesorId) {
+    // Obtener alumnos de los grupos que imparte (agrupados por grupo)
+    public function obtenerAlumnosGrupos($profesorId) {
     try {
         $query = "SELECT g.id as grupo_id, g.nombre as grupo_nombre, 
                          a.id, a.nombre_completo, a.matricula, a.carrera
@@ -134,6 +133,7 @@ public function obtenerAlumnosGrupos($profesorId) {
                   JOIN grupos g ON a.grupo_id = g.id
                   JOIN grupo_materia gm ON gm.id_grupo = g.id
                   WHERE gm.id_profesor = :id
+                  GROUP BY a.id, g.id  -- Esto elimina duplicados
                   ORDER BY g.nombre, a.nombre_completo";
         
         $stmt = $this->conn->prepare($query);
@@ -161,5 +161,6 @@ public function obtenerAlumnosGrupos($profesorId) {
         error_log("Error obteniendo alumnos: " . $e->getMessage());
         return [];
     }
+}
 }
 ?>

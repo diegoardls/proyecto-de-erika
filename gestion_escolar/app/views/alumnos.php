@@ -77,13 +77,23 @@
             <section class="card notes-card">
                 <h2 class="card-title">Bloc de Notas</h2>
                 <div class="notes-input-group">
-                    <input type="text" placeholder="Agregar Nota..." class="note-input">
-                    <button class="add-note-btn">+</button>
+                    <input type="text" placeholder="Agregar Nota..." class="note-input" id="new-note-input">
+                    <button class="add-note-btn" id="add-note-btn">+</button>
                 </div>
-                <div class="note-item existing-note">
-                    <input type="checkbox" id="examen-manana">
-                    <label for="examen-manana">Examen Mañana</label>
-                    <button class="delete-note-btn">X</button>
+                <div id="notes-container">
+                    <?php if (!empty($notas)): ?>
+                        <?php foreach ($notas as $nota): ?>
+                            <div class="note-item" data-note-id="<?php echo $nota['id']; ?>">
+                                <input type="checkbox" class="note-checkbox" <?php echo $nota['completado'] ? 'checked' : ''; ?>>
+                                <span class="note-text <?php echo $nota['completado'] ? 'completed' : ''; ?>">
+                                    <?php echo htmlspecialchars($nota['contenido']); ?>
+                                </span>
+                                <button class="delete-note-btn">X</button>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="no-notes-message">No hay notas. ¡Agrega una nueva!</div>
+                    <?php endif; ?>
                 </div>
             </section>
         

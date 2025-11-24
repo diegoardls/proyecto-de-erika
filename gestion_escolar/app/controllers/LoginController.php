@@ -7,14 +7,12 @@ class LoginController {
     public function handleLogin() {
         session_start();
         
-        echo "🔍 DEBUG: Procesando login...<br>";
         
         // 1. Recibir datos
         $usuario = $_POST['usuario'] ?? '';
         $contraseña = $_POST['contraseña'] ?? '';
         $rol = $_POST['rol'] ?? '';
 
-        echo "🔍 DEBUG: Usuario: $usuario, Rol: $rol<br>";
         
         // 2. Validar que no estén vacíos
         if (empty($usuario) || empty($contraseña) || empty($rol)) {
@@ -25,16 +23,13 @@ class LoginController {
 
         // 3. Usar el modelo para verificar credenciales en BD
         $loginModel = new LoginModel();
-        echo "🔍 DEBUG: LoginModel creado<br>";
         
         $usuarioData = $loginModel->verificarCredenciales($usuario, $contraseña, $rol);
         
-        echo "🔍 DEBUG: Resultado de verificación: ";
         var_dump($usuarioData);
         echo "<br>";
 
         if ($usuarioData) {
-            echo "🔍 DEBUG: Credenciales válidas<br>";
             
             // 4. Iniciar sesión con datos de BD
             $_SESSION["usuario_id"] = $usuarioData['id'];
@@ -47,11 +42,9 @@ class LoginController {
                 $_SESSION["datos_usuario"] = $datosUsuario;
             }
 
-            echo "🔍 DEBUG: Redirigiendo a dashboard...<br>";
             // 6. Redirigir según el rol
             $this->redirigirSegunRol($usuarioData['rol']);
         } else {
-            echo "🔍 DEBUG: Credenciales inválidas<br>";
             $_SESSION['error'] = "Usuario o contraseña incorrectos";
             header("Location: /gestion_escolar/");
             exit;
@@ -59,7 +52,6 @@ class LoginController {
     }
 
     private function redirigirSegunRol($rol) {
-        echo "🔍 DEBUG: Redirigiendo según rol: $rol<br>";
         switch ($rol) {
             case 'alumno':
                 header("Location: /gestion_escolar/index.php?p=alumnos");
@@ -80,10 +72,7 @@ class LoginController {
 
 // Ejecutar el controlador si se accede directamente
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['usuario'])) {
-    echo "🔍 DEBUG: Ejecutando handleLogin desde POST<br>";
     $loginController = new LoginController();
     $loginController->handleLogin();
-} else {
-    echo "🔍 DEBUG: No es una petición POST válida<br>";
 }
 ?>

@@ -136,25 +136,207 @@ if (toggler && actionsMenu) {
     console.error("No se encontraron los elementos necesarios para el despliegue. Verifica las IDs en tu HTML.");
 }
 
-// =======================
-// LOGOUT (Cerrar Sesión)
-// =======================
-//document.addEventListener("DOMContentLoaded", () => {
-
- //   const logoutButton = document.getElementById("logout-button");
-
- //   if (logoutButton) {
-  //      logoutButton.addEventListener("click", (e) => {
-  //          e.preventDefault(); 
-
-   //         console.log("Cerrando sesión...");
-
-            // Redirige al login
-  //          window.location.href = "/gestion_escolar/public/index.php";
-   //     });
-   // } else {
-   //     console.error("❌ No se encontró #logout-button");
-  //  }
-//});
-
+// Bloc de Notas Funcional
+// Bloc de Notas Funcional - VERSIÓN MEJORADA
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Inicializando bloc de notas...');
+    
+    const notesContainer = document.getElementById('notes-container');
+    const newNoteInput = document.getElementById('new-note-input');
+    const addNoteBtn = document.getElementById('add-note-btn');
+    
+    if (!notesContainer || !newNoteInput || !addNoteBtn) {
+        console.error('❌ No se encontraron elementos del bloc de notas');
+        return;
+    }
+    
+    console.log('✅ Elementos encontrados correctamente');
+    
+    // Estado del loading
+    let isLoading = false;
+    
+    // Función para mostrar loading
+    function setLoading(state) {
+        isLoading = state;
+        addNoteBtn.disabled = state;
+        addNoteBtn.textContent = state ? '⏳' : '+';
+    }
+    
+    // Función para agregar nota
+    async function addNote() {
+        if (isLoading) return;
+        
+        const contenido = newNoteInput.value.trim();
+        console.log('➕ Intentando agregar nota:', contenido);
+        
+        if (!contenido) {
+            alert('Por favor escribe una nota');
+            return;
+        }
+        
+        setLoading(true);
+        
+        try {
+            const formData = new FormData();
+            formData.append('action', 'add_note');
+            formData.append('contenido', contenido);
+            
+            console.log('📤 Enviando petición...');
+            const response = await fetch('/gestion_escolar/app/controllers/NotaController.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            console.log('📥 Respuesta recibida:', result);
+            
+            if (result.success) {
+                newNoteInput.value = '';
+                await loadNotes();
+                console.log('✅ Nota agregada correctamente');
+            } else {
+                alert('Error: ' + (result.error || 'Desconocido'));
+            }
+        } catch (error) {
+            console.error('❌ Error de conexión:', error);
+            alert('Error al conectar con el servidor');
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    // Función para cargar notas
+    async function loadNotes() {
+        try {
+            console.log('📥 Cargando notas...');
+            const formData = new FormData();
+            formData.append('action', 'get_notes');
+            
+            const response = await fetch('/gestion_escolar/app/controllers/NotaController.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            console.log('📋 Notas cargadas:', result.notes);
+            
+            if (result.success) {
+                renderNotes(result.notes);
+            }
+        } catch (error) {
+            console.error('❌ Error cargando notas:', error);
+        }
+    }
+    
+    // Función para renderizar notas
+    function renderNotes(notes) {
+        console.log('🎨 Renderizando', notes.length, 'notas');
+        
+        if (notes.length === 0) {
+            notesContainer.innerHTML = '<div class="no-notes-message">No hay notas. ¡Agrega una nueva!</div>';
+            return;
+        }
+        
+        notesContainer.innerHTML = notes.map(note => `
+            <div class="note-item" data-note-id="${note.id}">
+                <input type="checkbox" class="note-checkbox" ${note.completado ? 'checked' : ''}>
+                <span class="note-text ${note.completado ? 'completed' : ''}">
+                    ${note.contenido}
+                </span>
+                <small class="note-date">${formatDate(note.fecha_creacion)}</small>
+                <button class="delete-note-btn" title="Eliminar nota">X</button>
+            </div>
+        `).join('');
+        
+        // Agregar eventos
+        attachNoteEvents();
+    }
+    
+    // Función para formatear fecha
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+    
+    // Función para agregar eventos a las notas
+    function attachNoteEvents() {
+        // Checkboxes
+        document.querySelectorAll('.note-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const noteId = this.parentElement.dataset.noteId;
+                toggleNote(noteId, this);
+            });
+        });
+        
+        // Botones de eliminar
+        document.querySelectorAll('.delete-note-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const noteId = this.parentElement.dataset.noteId;
+                deleteNote(noteId);
+            });
+        });
+    }
+    
+    // Función para toggle note
+    async function toggleNote(noteId, checkbox) {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'toggle_note');
+            formData.append('note_id', noteId);
+            
+            const response = await fetch('/gestion_escolar/app/controllers/NotaController.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                const noteText = checkbox.parentElement.querySelector('.note-text');
+                noteText.classList.toggle('completed', checkbox.checked);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    
+    // Función para eliminar nota
+    async function deleteNote(noteId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar esta nota?')) return;
+        
+        try {
+            const formData = new FormData();
+            formData.append('action', 'delete_note');
+            formData.append('note_id', noteId);
+            
+            const response = await fetch('/gestion_escolar/app/controllers/NotaController.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                await loadNotes();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    
+    // Event listeners
+    addNoteBtn.addEventListener('click', addNote);
+    newNoteInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addNote();
+    });
+    
+    // Cargar notas al iniciar
+    loadNotes();
+    console.log('✅ Bloc de notas inicializado correctamente');
+});
 

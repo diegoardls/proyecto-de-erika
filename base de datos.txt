@@ -1,0 +1,154 @@
+CREATE DATABASE sistema_escolar;
+USE sistema_escolar;
+
+-- =========================================
+-- CREAR TABLAS PRINCIPALES
+-- =========================================
+
+-- TABLA DE USUARIOS (Login general)
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    contraseña VARCHAR(255) NOT NULL,
+    rol ENUM('alumno', 'profesor', 'administrativo') NOT NULL
+);
+
+-- TABLA ADMINISTRATIVOS
+CREATE TABLE administrativos (
+    id INT PRIMARY KEY,
+    nombre_completo VARCHAR(100),
+    num_empleado VARCHAR(20) UNIQUE,
+    horario_atencion VARCHAR(100),
+    ubicacion VARCHAR(100),
+    responsabilidad VARCHAR(100),
+    FOREIGN KEY (id) REFERENCES usuarios(id)
+);
+
+-- TABLA GRUPOS
+CREATE TABLE grupos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(20),
+    carrera VARCHAR(100),
+    turno VARCHAR(20),
+    aula VARCHAR(20),
+    grado VARCHAR(10)
+);
+
+-- TABLA ALUMNOS
+CREATE TABLE alumnos (
+    id INT PRIMARY KEY,
+    nombre_completo VARCHAR(100),
+    carrera VARCHAR(100),
+    matricula VARCHAR(20) UNIQUE,
+    encargado_id INT, 
+    turno VARCHAR(20),
+    aula VARCHAR(20),
+    grupo_id INT,
+    FOREIGN KEY (id) REFERENCES usuarios(id),
+    FOREIGN KEY (encargado_id) REFERENCES administrativos(id),
+    FOREIGN KEY (grupo_id) REFERENCES grupos(id)
+);
+
+-- TABLA PROFESORES
+CREATE TABLE profesores (
+    id INT PRIMARY KEY,
+    nombre_completo VARCHAR(100),
+    carrera_enfocada VARCHAR(100),
+    matricula VARCHAR(20) UNIQUE,
+    horario_trabajo VARCHAR(200),
+    FOREIGN KEY (id) REFERENCES usuarios(id)
+);
+
+-- TABLA MATERIAS
+CREATE TABLE materias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    carrera VARCHAR(100)
+);
+
+-- RELACIÓN: Profesor → Materias
+CREATE TABLE profesor_materia (
+    id_profesor INT,
+    id_materia INT,
+    PRIMARY KEY (id_profesor, id_materia),
+    FOREIGN KEY (id_profesor) REFERENCES profesores(id),
+    FOREIGN KEY (id_materia) REFERENCES materias(id)
+);
+
+-- RELACIÓN: Grupo → Materias impartidas por profesor
+CREATE TABLE grupo_materia (
+    id_grupo INT,
+    id_materia INT,
+    id_profesor INT,
+    PRIMARY KEY (id_grupo, id_materia),
+    FOREIGN KEY (id_grupo) REFERENCES grupos(id),
+    FOREIGN KEY (id_materia) REFERENCES materias(id),
+    FOREIGN KEY (id_profesor) REFERENCES profesores(id)
+);
+
+-- ADMINISTRATIVOS → CARRERAS Y GRUPOS
+CREATE TABLE administrativo_carrera (
+    id_admin INT,
+    carrera VARCHAR(100),
+    PRIMARY KEY (id_admin, carrera),
+    FOREIGN KEY (id_admin) REFERENCES administrativos(id)
+);
+
+CREATE TABLE administrativo_grupo (
+    id_admin INT,
+    id_grupo INT,
+    PRIMARY KEY (id_admin, id_grupo),
+    FOREIGN KEY (id_admin) REFERENCES administrativos(id),
+    FOREIGN KEY (id_grupo) REFERENCES grupos(id)
+);
+
+-- AVISOS IMPORTANTES
+CREATE TABLE avisos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100),
+    mensaje TEXT,
+    fecha DATETIME,
+    creado_por INT,
+    tipo ENUM('profesor','administrativo'),
+    grupo_id INT NULL,
+    FOREIGN KEY (creado_por) REFERENCES usuarios(id),
+    FOREIGN KEY (grupo_id) REFERENCES grupos(id)
+);
+
+-- INSERTAR DATOS DE PRUEBA
+INSERT INTO usuarios (usuario, contraseña, rol) VALUES
+('alumno123', '1234', 'alumno'),
+('profe123', 'abcd', 'profesor'),
+('admin123', 'admin', 'administrativo'),
+('maria.garcia', '1234', 'alumno'),
+('juan.perez', 'abcd', 'profesor'),
+('carlos.lopez', 'admin', 'administrativo');
+
+INSERT INTO grupos (nombre, carrera, turno, aula, grado) VALUES
+('Grupo1', 'Ingeniería en Sistemas', 'Matutino', 'A101', '1°'),
+('Grupo2', 'Administración', 'Vespertino', 'A102', '2°'),
+('Grupo3', 'Contaduría', 'Matutino', 'A103', '3°');
+
+INSERT INTO administrativos (id, nombre_completo, num_empleado, horario_atencion, ubicacion, responsabilidad) VALUES
+(3, 'Carlos López Martínez', 'EMP001', 'Lunes a Viernes 8:00-16:00', 'Edificio A, Oficina 101', 'Coordinación General'),
+(6, 'Ana Rodríguez Silva', 'EMP002', 'Lunes a Viernes 9:00-17:00', 'Edificio B, Oficina 205', 'Control Escolar');
+
+INSERT INTO alumnos (id, nombre_completo, carrera, matricula, encargado_id, turno, aula, grupo_id) VALUES
+(1, 'Ana López Martínez', 'Ingeniería en Sistemas', 'A123456', 3, 'Matutino', 'A101', 1),
+(4, 'María García Hernández', 'Administración', 'A123457', 3, 'Vespertino', 'A102', 2);
+
+INSERT INTO profesores (id, nombre_completo, carrera_enfocada, matricula, horario_trabajo) VALUES
+(2, 'Juan Pérez Rodríguez', 'Ingeniería en Sistemas', 'P987654', 'Lunes a Viernes 7:00-15:00'),
+(5, 'Roberto Sánchez Méndez', 'Administración', 'P987655', 'Lunes a Viernes 15:00-21:00');
+
+INSERT INTO materias (nombre, carrera) VALUES
+('Programación I', 'Ingeniería en Sistemas'),
+('Base de Datos', 'Ingeniería en Sistemas'),
+('Contabilidad', 'Administración'),
+('Matemáticas Financieras', 'Administración');
+
+INSERT INTO profesor_materia (id_profesor, id_materia) VALUES
+(2, 1), (2, 2), (5, 3), (5, 4);
+
+INSERT INTO grupo_materia (id_grupo, id_materia, id_profesor) VALUES
+(1, 1, 2), (1, 2, 2), (2, 3, 5), (2, 4, 5);

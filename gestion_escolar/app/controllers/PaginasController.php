@@ -12,6 +12,8 @@ class PaginasController {
         
         // Cargar modelo y obtener datos
         require_once __DIR__ . "/../models/AlumnoModel.php";
+        require_once __DIR__ . "/../models/NotaModel.php";
+        $notaModel = new NotaModel();
         $alumnoModel = new AlumnoModel();
         
         // Obtener datos del alumno
@@ -36,6 +38,8 @@ class PaginasController {
         }
         
         require_once __DIR__ . "/../models/ProfesorModel.php";
+        require_once __DIR__ . "/../models/NotaModel.php";
+        $notaModel = new NotaModel();
         $profesorModel = new ProfesorModel();
         
         $datosProfesor = $profesorModel->obtenerDatosProfesor($_SESSION['usuario_id']);
@@ -58,6 +62,8 @@ class PaginasController {
         }
         
         require_once __DIR__ . "/../models/AdministrativoModel.php";
+        require_once __DIR__ . "/../models/NotaModel.php";
+        $notaModel = new NotaModel();
         $adminModel = new AdministrativoModel();
         
         $datosAdmin = $adminModel->obtenerDatosAdministrativo($_SESSION['usuario_id']);

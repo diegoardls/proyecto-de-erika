@@ -275,12 +275,10 @@
                             <?php endif; ?>
                         </div>
                     </div>
-                <div id="alumnos-header" class="seccion-header">
-                    Alumnos
-                </div>
+                
 
                 <!-- Pestañas de grupos -->
-                <div class="horizontal-tabs-container">
+                <div class="horizontal-tabs-container" class="seccion-header">
                     <?php if (!empty($alumnos)): ?>
                         <?php foreach ($alumnos as $grupoId => $grupoData): ?>
                             <div id="grupo<?php echo $grupoId; ?>-header" class="seccion-header">
@@ -298,6 +296,7 @@
                 <?php if (!empty($alumnos)): ?>
                     <?php foreach ($alumnos as $grupoId => $grupoData): ?>
                         <div id="grupo<?php echo $grupoId; ?>-content" class="seccion-contenido">
+                            <h4>Grupo: <?php echo $grupoData['grupo_nombre'] ?? 'Grupo'; ?></h4>
                             <div class="general-grid">
                                 <?php if (!empty($grupoData['alumnos'])): ?>
                                     <?php foreach ($grupoData['alumnos'] as $alumno): ?>
@@ -305,7 +304,6 @@
                                             <span class="tamano"><?php echo $alumno['matricula'] ?? 'N/A'; ?></span>
                                             <span class="espacio"><?php echo $alumno['nombre_completo'] ?? 'Alumno'; ?></span>
                                             <span class="espacio"><?php echo $alumno['carrera'] ?? 'Carrera'; ?></span>
-                                            <span class="espacio">Grupo: <?php echo $grupoData['grupo_nombre'] ?? 'N/A'; ?></span>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>

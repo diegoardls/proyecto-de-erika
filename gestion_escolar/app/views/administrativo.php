@@ -242,247 +242,79 @@
                  </div>
                     <div id="administrativo-content" class="seccion-contenido">
                         <div class="general-grid">
-                            <div class="general-card" >
-                                <span class="tamano" > @NumemroAdministrativo1 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @NumemroAdministrativo2 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @NumemroAdministrativo3 </span>
-                                <span class="espacio"> Horario de atención </span>
-                                <span class="espacio"> Ubicacion de oficina </span>
-                            </div>
+                            <?php if (!empty($otrosAdministrativos)): ?>
+                                <?php foreach ($otrosAdministrativos as $admin): ?>
+                                    <div class="general-card">
+                                        <span class="tamano"><?php echo $admin['num_empleado'] ?? 'N/A'; ?></span>
+                                        <span class="espacio"><?php echo $admin['nombre_completo'] ?? 'Administrativo'; ?></span>
+                                        <span class="espacio"><?php echo $admin['horario_atencion'] ?? 'Horario no disponible'; ?></span>
+                                        <span class="espacio"><?php echo $admin['ubicacion'] ?? 'Ubicación no disponible'; ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="general-card">
+                                    <span class="tamano">No hay otros administrativos</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                 <div id="docentes-header" class="seccion-header">
                     Docentes</div>
-                    <div id="docentes-content" class="seccion-contenido ">
+                     <div id="docentes-content" class="seccion-contenido">
                         <div class="general-grid">
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor1 </span>
-                                <span class="espacio"> Materia Impartida </span>
-
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor2 </span>
-                                <span class="espacio"> Materia Impartida </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor3 </span>
-                                <span class="espacio"> Materia Impartida </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor4 </span>
-                                <span class="espacio"> Materia Impartida </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor5 </span>
-                                <span class="espacio"> Materia Impartida </span>
-                            </div>
-                            <div class="general-card">
-                                <span class="tamano" > @MatriculaNombrProfesor6 </span>
-                                <span class="espacio"> Materia Impartida </span>
-                            </div>
+                            <?php if (!empty($profesores)): ?>
+                                <?php foreach ($profesores as $profesor): ?>
+                                    <div class="general-card">
+                                        <span class="tamano"><?php echo $profesor['matricula'] ?? 'N/A'; ?></span>
+                                        <span class="espacio"><?php echo $profesor['nombre_completo'] ?? 'Profesor'; ?></span>
+                                        <span class="espacio"><?php echo $profesor['carrera_enfocada'] ?? 'Carrera no especificada'; ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="general-card">
+                                    <span class="tamano">No hay docentes disponibles</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-                <div id="contactar-content" class="horizontal-tabs-container">
-                    <div id="grupo1-header" class="seccion-header" >
-                        Grupo1
-                    </div>
-                    <div id="grupo2-header" class="seccion-header ">
-                        Grupo2
-                    </div>
-                    <div id="grupo3-header" class="seccion-header " >
-                        Grupo3
-                    </div>
-                    <div id="grupo4-header" class="seccion-header ">
-                        Grupo4
-                    </div>
-                    <div id="grupo5-header" class="seccion-header ">
-                        Grupo5
-                    </div>
+                <div class="horizontal-tabs-container" class="seccion-header">
+                    <?php if (!empty($todosLosGrupos)): ?>
+                        <?php foreach ($todosLosGrupos as $grupo): ?>
+                            <div id="grupo<?php echo $grupo['id']; ?>-header" class="seccion-header">
+                                <?php echo $grupo['nombre']; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
 
-                <div id="grupo1-content" class="seccion-contenido">
-                    <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
+                <!-- CONTENIDO DE CADA GRUPO -->
+                <?php if (!empty($todosLosGrupos)): ?>
+                    <?php foreach ($todosLosGrupos as $grupo): ?>
+                        <div id="grupo<?php echo $grupo['id']; ?>-content" class="seccion-contenido">
+                            <div class="general-grid">
+                                <?php 
+                                $alumnosGrupo = $adminModel->obtenerAlumnosPorGrupo($grupo['id']);
+                                if (!empty($alumnosGrupo)): 
+                                ?>
+                                    <?php foreach ($alumnosGrupo as $alumno): ?>
+                                        <div class="general-card">
+                                            <span class="tamano"><?php echo $alumno['matricula'] ?? 'N/A'; ?></span>
+                                            <span class="espacio"><?php echo $alumno['nombre_completo'] ?? 'Alumno'; ?></span>
+                                            <span class="espacio"><?php echo $alumno['carrera'] ?? 'Carrera'; ?></span>
+                                            <span class="espacio">Grupo: <?php echo $alumno['grupo'] ?? 'N/A'; ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="general-card">
+                                        <span class="tamano">No hay alumnos en este grupo</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                    </div>
-                </div>
-                <div id="grupo2-content" class="seccion-contenido ">
-                    <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1</span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="grupo3-content" class="seccion-contenido ">
-                    <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1</span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="grupo4-content" class="seccion-contenido ">
-                    <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="grupo5-content" class="seccion-contenido ">
-                    <div class="general-grid">
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno1 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno2 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno3 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno4 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno5 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                        <div class="general-card">
-                            <span class="tamano" > @MatriculaNombrAlumno6 </span>
-                            <span class="espacio"> Carrera </span>
-                            <span class="espacio"> Grado Grupo </span>
-                        </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
 
         </section>
